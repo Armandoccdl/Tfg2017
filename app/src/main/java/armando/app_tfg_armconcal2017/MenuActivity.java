@@ -58,6 +58,14 @@ public class MenuActivity extends Activity {
     }
 
 
+    public void accessListEvents(View view){
+        Intent intent = new Intent(this, EventsActivity.class);
+        Bundle b = getIntent().getExtras();
+        intent.putExtras(b);
+        startActivity(intent);
+        finish();
+
+    }
 
 
 

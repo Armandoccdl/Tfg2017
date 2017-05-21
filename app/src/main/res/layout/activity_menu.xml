@@ -41,6 +41,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btnMenuEvents"
                 android:background="#eeeeee"
+                android:onClick="accessListEvents"
                 android:src="@drawable/events" />
 
             <View

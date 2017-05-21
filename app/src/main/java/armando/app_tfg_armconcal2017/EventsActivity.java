@@ -67,29 +67,8 @@ public class EventsActivity extends Activity{
         });
     }
 
-    public boolean getEventsList(){
-        events.clear();
-        String data = log();
-        if(!data.equalsIgnoreCase("")){
-            JSONObject json;
-            try{
-                json = new JSONObject(data);
-                JSONArray jsonArray = json.optJSONArray("info");
-                for(int i = 0; i < jsonArray.length(); i++){
-                    JSONObject jsonArrayChild = jsonArray.getJSONObject(i);
-                    event = new EventList(jsonArrayChild.optInt("id"),jsonArrayChild.optInt("restaurant"),jsonArrayChild.optString("name"),jsonArrayChild.optString("Date"),jsonArrayChild.optDouble("price"));
-                    events.add(event);
-                }
-                return true;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return false;
-    }
-
     public String log() {
-        httppost = new HttpPost("http://armconcaltfg.esy.es/php/getRestaurants.php");
+        httppost = new HttpPost("http://armconcaltfg.esy.es/php/getEvents.php");
         HttpResponse response;
         String result = "";
 
@@ -107,6 +86,29 @@ public class EventsActivity extends Activity{
         }
         return result;
     }
+
+
+    public boolean getEventsList(){
+        events.clear();
+        String data = log();
+        if(!data.equalsIgnoreCase("")){
+            JSONObject json;
+            try{
+                json = new JSONObject(data);
+                JSONArray jsonArray = json.optJSONArray("info");
+                for(int i = 0; i < jsonArray.length(); i++){
+                    JSONObject jsonArrayChild = jsonArray.getJSONObject(i);
+                    event = new EventList(jsonArrayChild.optInt("id"),jsonArrayChild.optInt("restaurant"),jsonArrayChild.optString("name"),jsonArrayChild.optString("date"),jsonArrayChild.optDouble("price"));
+                    events.add(event);
+                }
+                return true;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
 
     public class List extends AsyncTask<String, Float, String> {
 
@@ -126,21 +128,21 @@ public class EventsActivity extends Activity{
                             @Override
                             public void onEntrance(Object entrance, View view) {
                                 if (entrance != null) {
-                                    TextView nameR = (TextView) view.findViewById(R.id.txtRowRestaurantName);
-                                    if (nameR != null)
-                                        nameR.setText(""+((RestaurantList) entrance).getName());
+                                    TextView nameE = (TextView) view.findViewById(R.id.txtRowEventName);
+                                    if (nameE != null)
+                                        nameE.setText(""+((EventList) entrance).getName());
 
-                                    TextView phoneR = (TextView) view.findViewById(R.id.txtRowRestaurantPhone);
-                                    if (phoneR != null)
-                                        phoneR.setText(""+ ((RestaurantList) entrance).getPhone());
+                                    TextView restaurantE = (TextView) view.findViewById(R.id.txtRowEventRestaurant);
+                                    if (restaurantE != null)
+                                        restaurantE.setText(""+ ((EventList) entrance).getRestaurant());
 
-                                    TextView likesR = (TextView) view.findViewById(R.id.txtRowRestaurantLikes);
-                                    if (likesR != null)
-                                        likesR.setText(""+((RestaurantList) entrance).getLikes());
+                                    TextView dateE = (TextView) view.findViewById(R.id.txtRowEventDate);
+                                    if (dateE != null)
+                                        dateE.setText(""+((EventList) entrance).getDate());
 
-                                    TextView dislikesR = (TextView) view.findViewById(R.id.txtRowRestaurantDislikes);
-                                    if (dislikesR != null)
-                                        dislikesR.setText(""+((RestaurantList) entrance).getDislikes());
+                                    TextView priceE = (TextView) view.findViewById(R.id.txtRowEventPrice);
+                                    if (priceE != null)
+                                        priceE.setText(""+((EventList) entrance).getPrice());
                                 }
                             }
                         });
