@@ -13,4 +13,5 @@
     <string name="eventsList">EVENTS</string>
     <string name="recommend">RECOMMEND</string>
     <string name="join">JOIN</string>
+    <string name="unjoin">UNCOIL</string>
 </resources>
