@@ -43,6 +43,10 @@
             android:screenOrientation="portrait"
             android:name=".EventsActivity">
         </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".EventActivity">
+        </activity>
 
     </application>
 
