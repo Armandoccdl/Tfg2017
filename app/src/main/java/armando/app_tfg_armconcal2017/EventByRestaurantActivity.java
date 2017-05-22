@@ -2,20 +2,12 @@ package armando.app_tfg_armconcal2017;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.squareup.picasso.Picasso;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -35,81 +27,54 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.util.ArrayList;
 
-public class RestaurantActivity extends Activity{
-    String idRestaurant = "";
+public class EventByRestaurantActivity extends Activity {
+    String idEvent = "";
     String user = "";
-    ImageView photo;
-    TextView name, address, phone, web;
-    ImageButton like, dislike;
-    Button events;
+    Button join;
+    TextView name, description, restaurant, date, price, assistants;
     HttpClient httpclient = new DefaultHttpClient();
     ArrayList<NameValuePair> nameValuePairs;
     HttpPost httppost;
     ArrayList<Object> info = new ArrayList<>();
-    ArrayList<Object> likeChecked = new ArrayList<>();
-    ArrayList<Object> dislikeChecked = new ArrayList<>();
+    ArrayList<Object> number = new ArrayList<>();
+    ArrayList<Object> joinChecked = new ArrayList<>();
     Activity ctx = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_restaurant);
+        setContentView(R.layout.activity_event);
 
         if(getIntent().getExtras() != null){
             Bundle b = getIntent().getExtras();
-            String i = b.getString("Id");
+            String i = b.getString("IdE");
             String u = b.getString("User");
-            idRestaurant = i;
+            idEvent = i;
             user = u;
         }
 
-        name = (TextView) findViewById(R.id.txtRestaurantName);
-        photo = (ImageView) findViewById(R.id.imgRestaurantPhoto);
-        address = (TextView) findViewById(R.id.txtRestaurantAddress);
-        phone = (TextView) findViewById(R.id.txtRestaurantPhone);
-        web = (TextView) findViewById(R.id.txtRestaurantWeb);
-        like = (ImageButton) findViewById(R.id.btnRestaurantLike);
-        dislike = (ImageButton) findViewById(R.id.btnRestaurantDislike);
-        events = (Button) findViewById(R.id.btnRestaurantEvent);
+        name = (TextView) findViewById(R.id.txtEventName);
+        description = (TextView) findViewById(R.id.txtEventDescription);
+        restaurant = (TextView) findViewById(R.id.txtEventRestaurant);
+        date = (TextView) findViewById(R.id.txtEventDate);
+        price = (TextView) findViewById(R.id.txtEventPrice);
+        assistants = (TextView) findViewById(R.id.txtEventAssistants);
+        join = (Button) findViewById(R.id.btnEventJoin);
 
-        new Info(RestaurantActivity.this).execute();
-        new CheckLike(RestaurantActivity.this).execute();
-        new CheckDislike(RestaurantActivity.this).execute();
+        new EventByRestaurantActivity.Info(EventByRestaurantActivity.this).execute();
+        new EventByRestaurantActivity.CheckAssistance(EventByRestaurantActivity.this).execute();
 
-        like.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                new CreateLike(RestaurantActivity.this).execute();
-            }
-        });
-
-        dislike.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                new CreateDislike(RestaurantActivity.this).execute();
-            }
-        });
-
-        events.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                new getEvents(RestaurantActivity.this).execute();
-            }
-        });
 
 
     }
 
+
     public String log() {
-        httppost = new HttpPost("http://armconcaltfg.esy.es/php/getRestaurant.php");
+        httppost = new HttpPost("http://armconcaltfg.esy.es/php/getEvent.php");
         nameValuePairs = new ArrayList<NameValuePair>(1);
-        nameValuePairs.add(new BasicNameValuePair("id", idRestaurant));
+        nameValuePairs.add(new BasicNameValuePair("id", idEvent));
         HttpResponse response;
         String result = "";
 
@@ -129,6 +94,7 @@ public class RestaurantActivity extends Activity{
         return result;
     }
 
+
     private boolean filter(){
         String data = log();
         System.out.println("Returns: " + data);
@@ -140,10 +106,11 @@ public class RestaurantActivity extends Activity{
                 for(int i = 0; i < jsonArray.length(); i++){
                     JSONObject jsonArrayChild = jsonArray.getJSONObject(i);
                     info.add(jsonArrayChild.optString("name"));
-                    info.add(jsonArrayChild.optString("photo"));
-                    info.add(jsonArrayChild.optString("address"));
-                    info.add(jsonArrayChild.optString("phone"));
-                    info.add(jsonArrayChild.optString("web"));
+                    info.add(jsonArrayChild.optString("description"));
+                    info.add(jsonArrayChild.optString("restaurant"));
+                    info.add(jsonArrayChild.optString("date"));
+                    info.add(jsonArrayChild.optString("price"));
+                    info.add(jsonArrayChild.optString("assistants"));
                 }
                 return true;
             } catch (JSONException e) {
@@ -168,10 +135,11 @@ public class RestaurantActivity extends Activity{
                     @Override
                     public void run() {
                         name.setText(info.get(0).toString());
-                        Picasso.with(ctx).load(info.get(1).toString()).into(photo);
-                        address.setText(info.get(2).toString());
-                        phone.setText(info.get(3).toString());
-                        web.setText(info.get(4).toString());
+                        description.setText(info.get(1).toString());
+                        restaurant.setText(info.get(2).toString());
+                        date.setText(info.get(3).toString());
+                        price.setText(info.get(4).toString());
+                        assistants.setText(info.get(5).toString());
                     }
                 });
             }
@@ -179,10 +147,12 @@ public class RestaurantActivity extends Activity{
         }
     }
 
-    public String checkLike() {
-        httppost = new HttpPost("http://armconcaltfg.esy.es/php/checkLike.php");
+
+
+    public String checkjoin() {
+        httppost = new HttpPost("http://armconcaltfg.esy.es/php/checkAssistance.php");
         nameValuePairs = new ArrayList<NameValuePair>(2);
-        nameValuePairs.add(new BasicNameValuePair("idR", idRestaurant));
+        nameValuePairs.add(new BasicNameValuePair("idE", idEvent));
         nameValuePairs.add(new BasicNameValuePair("user", user));
         HttpResponse response;
         String result = "";
@@ -203,8 +173,8 @@ public class RestaurantActivity extends Activity{
         return result;
     }
 
-    private boolean likeStatus(){
-        String data = checkLike();
+    private boolean joinStatus(){
+        String data = checkjoin();
         System.out.println("Returns: " + data);
         System.out.println(user);
         if(!data.equals("[]\n")){
@@ -214,7 +184,7 @@ public class RestaurantActivity extends Activity{
                 JSONArray jsonArray = json.optJSONArray("info");
                 for(int i = 0; i < jsonArray.length(); i++){
                     JSONObject jsonArrayChild = jsonArray.getJSONObject(i);
-                    likeChecked.add(jsonArrayChild.optString("user"));
+                    joinChecked.add(jsonArrayChild.optString("user"));
                 }
                 return true;
             } catch (JSONException e) {
@@ -224,31 +194,46 @@ public class RestaurantActivity extends Activity{
         return false;
     }
 
-    public class CheckLike extends AsyncTask<String, Float, String> {
+    public class CheckAssistance extends AsyncTask<String, Float, String> {
 
         private Activity ctx;
 
-        CheckLike(Activity ctx){
+        CheckAssistance(Activity ctx){
             this.ctx = ctx;
         }
 
         @Override
         protected String doInBackground(String... params) {
-            if(likeStatus()){
+            if(joinStatus()){
                 ctx.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        String userId = likeChecked.get(0).toString();
+                        String userId = joinChecked.get(0).toString();
                         if(userId.equals(user)){
-                            like.setClickable(false);
-                            like.setEnabled(false);
-                            like.setImageResource(R.drawable.like_check);
-                            dislike.setImageResource(R.drawable.dislike);
-                            dislike.setClickable(true);
-                            dislike.setEnabled(true);
+                            join.setText(R.string.unjoin);
+                            join.setOnClickListener(new View.OnClickListener(){
 
+                                @Override
+                                public void onClick(View v) {
+                                    new DeleteAssistant(EventByRestaurantActivity.this).execute();
+                                }
+                            });
 
                         }
+                    }
+                });
+            }else{
+                ctx.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        join.setText(R.string.join);
+                        join.setOnClickListener(new View.OnClickListener(){
+
+                            @Override
+                            public void onClick(View v) {
+                                new CreateAssistant(EventByRestaurantActivity.this).execute();
+                            }
+                        });
                     }
                 });
             }
@@ -256,11 +241,131 @@ public class RestaurantActivity extends Activity{
         }
     }
 
-    public String checkDislike() {
-        httppost = new HttpPost("http://armconcaltfg.esy.es/php/checkDislike.php");
+
+    public boolean assistance(){
+
+        httppost = new HttpPost("http://armconcaltfg.esy.es/php/createAssistant.php");
         nameValuePairs = new ArrayList<NameValuePair>(2);
-        nameValuePairs.add(new BasicNameValuePair("idR", idRestaurant));
+        nameValuePairs.add(new BasicNameValuePair("idE", idEvent));
         nameValuePairs.add(new BasicNameValuePair("user", user));
+
+        try{
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            httpclient.execute(httppost);
+            return true;
+        }catch(UnsupportedEncodingException e){
+            e.printStackTrace();
+        }catch (ClientProtocolException e) {
+            e.printStackTrace();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public class CreateAssistant extends AsyncTask<String, String, String> {
+
+        private Activity ctx;
+
+        CreateAssistant(Activity ctx){
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            if(assistance()){
+                ctx.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(ctx, "you just Join the event", Toast.LENGTH_LONG).show();
+                        new UpdateNumber(EventByRestaurantActivity.this).execute();
+                        new CheckAssistance(EventByRestaurantActivity.this).execute();
+                        join.setOnClickListener(new View.OnClickListener(){
+
+                            @Override
+                            public void onClick(View v) {
+                                new DeleteAssistant(EventByRestaurantActivity.this).execute();
+                            }
+                        });
+                    }
+                });
+            }else{
+                ctx.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(ctx, "Something went wrong", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+            return null;
+        }
+    }
+
+
+    public boolean unassistance(){
+
+        httppost = new HttpPost("http://armconcaltfg.esy.es/php/deleteAssistant.php");
+        nameValuePairs = new ArrayList<NameValuePair>(2);
+        nameValuePairs.add(new BasicNameValuePair("idE", idEvent));
+        nameValuePairs.add(new BasicNameValuePair("user", user));
+
+        try{
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            httpclient.execute(httppost);
+            return true;
+        }catch(UnsupportedEncodingException e){
+            e.printStackTrace();
+        }catch (ClientProtocolException e) {
+            e.printStackTrace();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public class DeleteAssistant extends AsyncTask<String, String, String> {
+
+        private Activity ctx;
+
+        DeleteAssistant(Activity ctx){
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            if(unassistance()){
+                ctx.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(ctx, "you just uncoil the event", Toast.LENGTH_LONG).show();
+                        new UpdateNumber(EventByRestaurantActivity.this).execute();
+                        new CheckAssistance(EventByRestaurantActivity.this).execute();
+                        join.setOnClickListener(new View.OnClickListener(){
+
+                            @Override
+                            public void onClick(View v) {
+                                new CreateAssistant(EventByRestaurantActivity.this).execute();
+                            }
+                        });
+                    }
+                });
+            }else{
+                ctx.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(ctx, "Something went wrong", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+            return null;
+        }
+    }
+
+
+    public String number() {
+        httppost = new HttpPost("http://armconcaltfg.esy.es/php/getEvent.php");
+        nameValuePairs = new ArrayList<NameValuePair>(1);
+        nameValuePairs.add(new BasicNameValuePair("id", idEvent));
         HttpResponse response;
         String result = "";
 
@@ -280,18 +385,18 @@ public class RestaurantActivity extends Activity{
         return result;
     }
 
-    private boolean dislikeStatus(){
-        String data = checkDislike();
+
+    private boolean filterNumber(){
+        String data = number();
         System.out.println("Returns: " + data);
-        System.out.println(user);
-        if(!data.equals("[]\n")){
+        if(!data.equalsIgnoreCase("")){
             JSONObject json;
             try{
                 json = new JSONObject(data);
                 JSONArray jsonArray = json.optJSONArray("info");
                 for(int i = 0; i < jsonArray.length(); i++){
                     JSONObject jsonArrayChild = jsonArray.getJSONObject(i);
-                    dislikeChecked.add(jsonArrayChild.optString("user"));
+                    number.add(jsonArrayChild.optString("assistants"));
                 }
                 return true;
             } catch (JSONException e) {
@@ -301,29 +406,22 @@ public class RestaurantActivity extends Activity{
         return false;
     }
 
-    public class CheckDislike extends AsyncTask<String, Float, String> {
+    public class UpdateNumber extends AsyncTask<String, Float, String> {
 
         private Activity ctx;
 
-        CheckDislike(Activity ctx){
+        UpdateNumber(Activity ctx){
             this.ctx = ctx;
         }
 
         @Override
         protected String doInBackground(String... params) {
-            if(dislikeStatus()){
+            if(filterNumber()){
                 ctx.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        String userId = dislikeChecked.get(0).toString();
-                        if(userId.equals(user)){
-                            dislike.setClickable(false);
-                            dislike.setEnabled(false);
-                            dislike.setImageResource(R.drawable.dislike_check);
-                            like.setImageResource(R.drawable.like);
-                            like.setClickable(true);
-                            like.setEnabled(true);
-                        }
+                        assistants.setText(number.get(0).toString());
+                        number.clear();
                     }
                 });
             }
@@ -331,107 +429,7 @@ public class RestaurantActivity extends Activity{
         }
     }
 
-    public boolean like(){
 
-        httppost = new HttpPost("http://armconcaltfg.esy.es/php/createLike.php");
-        nameValuePairs = new ArrayList<NameValuePair>(2);
-        nameValuePairs.add(new BasicNameValuePair("idR", idRestaurant));
-        nameValuePairs.add(new BasicNameValuePair("user", user));
-
-        try{
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-            httpclient.execute(httppost);
-            return true;
-        }catch(UnsupportedEncodingException e){
-            e.printStackTrace();
-        }catch (ClientProtocolException e) {
-            e.printStackTrace();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public class CreateLike extends AsyncTask<String, String, String> {
-
-        private Activity ctx;
-
-        CreateLike(Activity ctx){
-            this.ctx = ctx;
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            if(like()){
-                ctx.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(ctx, "Like!", Toast.LENGTH_LONG).show();
-                        new CheckLike(RestaurantActivity.this).execute();
-                    }
-                });
-            }else{
-                ctx.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(ctx, "Error creating like", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-            return null;
-        }
-    }
-
-    public boolean dislike(){
-
-        httppost = new HttpPost("http://armconcaltfg.esy.es/php/createDislike.php");
-        nameValuePairs = new ArrayList<NameValuePair>(2);
-        nameValuePairs.add(new BasicNameValuePair("idR", idRestaurant));
-        nameValuePairs.add(new BasicNameValuePair("user", user));
-
-        try{
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-            httpclient.execute(httppost);
-            return true;
-        }catch(UnsupportedEncodingException e){
-            e.printStackTrace();
-        }catch (ClientProtocolException e) {
-            e.printStackTrace();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public class CreateDislike extends AsyncTask<String, String, String> {
-
-        private Activity ctx;
-
-        CreateDislike(Activity ctx){
-            this.ctx = ctx;
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            if(dislike()){
-                ctx.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(ctx, "Dislike!", Toast.LENGTH_LONG).show();
-                        new CheckDislike(RestaurantActivity.this).execute();
-                    }
-                });
-            }else{
-                ctx.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(ctx, "Error creating dislike", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-            return null;
-        }
-    }
 
     public String convertStreamToString(InputStream is) throws IOException {
         if (is != null) {
@@ -452,35 +450,6 @@ public class RestaurantActivity extends Activity{
     }
 
 
-
-    public class getEvents extends AsyncTask<String, Float, String> {
-
-        private Activity ctx;
-
-
-        getEvents(Activity ctx){
-            this.ctx = ctx;
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            ctx.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = new Intent(ctx, EventsByRestaurantActivity.class);
-                    Bundle b = getIntent().getExtras();
-                    b.putString("nameRestaurant", info.get(0).toString());
-                    b.putString("User", user);
-                    intent.putExtras(b);
-                    startActivity(intent);
-                    finish();
-                }
-            });
-
-            return null;
-        }
-    }
-
     public class Back extends AsyncTask<String, Float, String> {
 
         private Activity ctx;
@@ -495,10 +464,8 @@ public class RestaurantActivity extends Activity{
             ctx.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Intent intent = new Intent(ctx, RestaurantsActivity.class);
+                    Intent intent = new Intent(ctx, EventsByRestaurantActivity.class);
                     Bundle b = getIntent().getExtras();
-                    b.putString("Id", idRestaurant);
-                    b.putString("User", user);
                     intent.putExtras(b);
                     startActivity(intent);
                     finish();
@@ -511,7 +478,10 @@ public class RestaurantActivity extends Activity{
 
 
     public void onBackPressed() {
-        new Back(RestaurantActivity.this).execute();
+        new EventByRestaurantActivity.Back(EventByRestaurantActivity.this).execute();
     }
+
+
+
 
 }
