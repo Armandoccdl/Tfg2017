@@ -3,14 +3,14 @@ package armando.app_tfg_armconcal2017;
 
 import java.sql.Date;
 
-public class EventList {
+public class Event {
 
-    private int restaurant, id;
-    private String name, date;
+    private int id;
+    private String name, date, restaurant;
     private double price;
 
 
-    public EventList(int id, int restaurant, String name, String date, double price) {
+    public Event(int id, String restaurant, String name, String date, double price) {
 
         this.id = id;
         this.restaurant = restaurant;
@@ -25,7 +25,7 @@ public class EventList {
     }
 
 
-    public int getRestaurant() {
+    public String getRestaurant() {
         return restaurant;
     }
 

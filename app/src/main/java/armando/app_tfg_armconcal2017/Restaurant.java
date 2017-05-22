@@ -1,12 +1,12 @@
 package armando.app_tfg_armconcal2017;
 
-public class RestaurantList {
+public class Restaurant {
 
     private int id, likes, dislikes;
     private String name, phone;
 
 
-    public RestaurantList(int id, int likes, int dislikes, String name, String phone) {
+    public Restaurant(int id, int likes, int dislikes, String name, String phone) {
         this.id = id;
         this.likes = likes;
         this.dislikes = dislikes;

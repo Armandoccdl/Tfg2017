@@ -33,8 +33,8 @@ public class EventsActivity extends Activity{
     ListView list;
     HttpClient httpclient = new DefaultHttpClient();
     HttpPost httppost;
-    ArrayList<EventList> events = new ArrayList<EventList>();
-    EventList event;
+    ArrayList<Event> events = new ArrayList<Event>();
+    Event event;
     Activity ctx = this;
 
     @Override
@@ -55,7 +55,7 @@ public class EventsActivity extends Activity{
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final EventList event = (EventList) list.getAdapter().getItem(position);
+                final Event event = (Event) list.getAdapter().getItem(position);
                 idEvent = String.valueOf(event.getId());
                 Intent intent = new Intent(ctx, EventActivity.class);
                 Bundle b = getIntent().getExtras();
@@ -98,7 +98,7 @@ public class EventsActivity extends Activity{
                 JSONArray jsonArray = json.optJSONArray("info");
                 for(int i = 0; i < jsonArray.length(); i++){
                     JSONObject jsonArrayChild = jsonArray.getJSONObject(i);
-                    event = new EventList(jsonArrayChild.optInt("id"),jsonArrayChild.optInt("restaurant"),jsonArrayChild.optString("name"),jsonArrayChild.optString("date"),jsonArrayChild.optDouble("price"));
+                    event = new Event(jsonArrayChild.optInt("id"),jsonArrayChild.optString("restaurant"),jsonArrayChild.optString("name"),jsonArrayChild.optString("date"),jsonArrayChild.optDouble("price"));
                     events.add(event);
                 }
                 return true;
@@ -130,19 +130,19 @@ public class EventsActivity extends Activity{
                                 if (entrance != null) {
                                     TextView nameE = (TextView) view.findViewById(R.id.txtRowEventName);
                                     if (nameE != null)
-                                        nameE.setText(""+((EventList) entrance).getName());
+                                        nameE.setText(""+((Event) entrance).getName());
 
                                     TextView restaurantE = (TextView) view.findViewById(R.id.txtRowEventRestaurant);
                                     if (restaurantE != null)
-                                        restaurantE.setText(""+ ((EventList) entrance).getRestaurant());
+                                        restaurantE.setText(""+ ((Event) entrance).getRestaurant());
 
                                     TextView dateE = (TextView) view.findViewById(R.id.txtRowEventDate);
                                     if (dateE != null)
-                                        dateE.setText(""+((EventList) entrance).getDate());
+                                        dateE.setText(""+((Event) entrance).getDate());
 
                                     TextView priceE = (TextView) view.findViewById(R.id.txtRowEventPrice);
                                     if (priceE != null)
-                                        priceE.setText(""+((EventList) entrance).getPrice());
+                                        priceE.setText(""+((Event) entrance).getPrice());
                                 }
                             }
                         });

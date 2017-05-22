@@ -33,8 +33,8 @@ public class RestaurantsActivity extends Activity{
     ListView list;
     HttpClient httpclient = new DefaultHttpClient();
     HttpPost httppost;
-    ArrayList<RestaurantList> restaurants = new ArrayList<RestaurantList>();
-    RestaurantList restaurant;
+    ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
+    Restaurant restaurant;
     Activity ctx = this;
 
     @Override
@@ -55,7 +55,7 @@ public class RestaurantsActivity extends Activity{
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final RestaurantList restaurant = (RestaurantList) list.getAdapter().getItem(position);
+                final Restaurant restaurant = (Restaurant) list.getAdapter().getItem(position);
                 idRestaurant = String.valueOf(restaurant.getId());
                 Intent intent = new Intent(ctx, RestaurantActivity.class);
                 Bundle b = getIntent().getExtras();
@@ -77,7 +77,7 @@ public class RestaurantsActivity extends Activity{
                 JSONArray jsonArray = json.optJSONArray("info");
                 for(int i = 0; i < jsonArray.length(); i++){
                     JSONObject jsonArrayChild = jsonArray.getJSONObject(i);
-                    restaurant = new RestaurantList(jsonArrayChild.optInt("id"),jsonArrayChild.optInt("likes"),jsonArrayChild.optInt("dislikes"),jsonArrayChild.optString("name"),jsonArrayChild.optString("phone"));
+                    restaurant = new Restaurant(jsonArrayChild.optInt("id"),jsonArrayChild.optInt("likes"),jsonArrayChild.optInt("dislikes"),jsonArrayChild.optString("name"),jsonArrayChild.optString("phone"));
                     restaurants.add(restaurant);
                 }
                 return true;
@@ -128,19 +128,19 @@ public class RestaurantsActivity extends Activity{
                                 if (entrance != null) {
                                     TextView nameR = (TextView) view.findViewById(R.id.txtRowRestaurantName);
                                     if (nameR != null)
-                                        nameR.setText(""+((RestaurantList) entrance).getName());
+                                        nameR.setText(""+((Restaurant) entrance).getName());
 
                                     TextView phoneR = (TextView) view.findViewById(R.id.txtRowRestaurantPhone);
                                     if (phoneR != null)
-                                        phoneR.setText(""+ ((RestaurantList) entrance).getPhone());
+                                        phoneR.setText(""+ ((Restaurant) entrance).getPhone());
 
                                     TextView likesR = (TextView) view.findViewById(R.id.txtRowRestaurantLikes);
                                     if (likesR != null)
-                                        likesR.setText(""+((RestaurantList) entrance).getLikes());
+                                        likesR.setText(""+((Restaurant) entrance).getLikes());
 
                                     TextView dislikesR = (TextView) view.findViewById(R.id.txtRowRestaurantDislikes);
                                     if (dislikesR != null)
-                                        dislikesR.setText(""+((RestaurantList) entrance).getDislikes());
+                                        dislikesR.setText(""+((Restaurant) entrance).getDislikes());
                                 }
                             }
                         });
