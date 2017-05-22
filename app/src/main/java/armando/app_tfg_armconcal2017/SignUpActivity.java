@@ -68,33 +68,66 @@ public class SignUpActivity extends Activity {
         });
     }
 
-    public boolean addUser(){
+    public int addUser() {
         String u = user.getText().toString();
         String p = pass.getText().toString();
         String em = email.getText().toString();
         String ph = phone.getText().toString();
+        String sameName = checkName();
 
-        if(!u.equals("") && !p.equals("") && !em.equals("") && !ph.equals("")){
-            httppost = new HttpPost("http://armconcaltfg.esy.es/php/insertUser.php");
-            nameValuePairs = new ArrayList<NameValuePair>(4);
-            nameValuePairs.add(new BasicNameValuePair("user", u));
-            nameValuePairs.add(new BasicNameValuePair("password", p));
-            nameValuePairs.add(new BasicNameValuePair("email", em));
-            nameValuePairs.add(new BasicNameValuePair("phone", ph));
+        if (!sameName.equals("[]\n")) {
+            return 1;
+        } else {
+            if (!u.equals("") && !p.equals("") && !em.equals("") && !ph.equals("")) {
+                httppost = new HttpPost("http://armconcaltfg.esy.es/php/createUser.php");
+                nameValuePairs = new ArrayList<NameValuePair>(4);
+                nameValuePairs.add(new BasicNameValuePair("user", u));
+                nameValuePairs.add(new BasicNameValuePair("password", p));
+                nameValuePairs.add(new BasicNameValuePair("email", em));
+                nameValuePairs.add(new BasicNameValuePair("phone", ph));
 
-            try{
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                httpclient.execute(httppost);
-                return true;
-            }catch(UnsupportedEncodingException e){
-                e.printStackTrace();
-            }catch (ClientProtocolException e) {
-                e.printStackTrace();
-            }catch(IOException e){
-                e.printStackTrace();
+                try {
+                    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                    httpclient.execute(httppost);
+                    return 0;
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (ClientProtocolException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                return 2;
             }
         }
-        return false;
+        return 3;
+    }
+
+    public String checkName(){
+        String u = user.getText().toString();
+        HttpResponse response;
+        String result = "";
+
+        httppost = new HttpPost("http://armconcaltfg.esy.es/php/checkUser.php");
+        nameValuePairs = new ArrayList<NameValuePair>(1);
+        nameValuePairs.add(new BasicNameValuePair("user", u));
+
+
+        try{
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            response = httpclient.execute(httppost);
+            HttpEntity entity = response.getEntity();
+            InputStream instream = entity.getContent();
+            result = convertStreamToString(instream);
+        }catch(UnsupportedEncodingException e){
+                e.printStackTrace();
+        }catch (ClientProtocolException e) {
+                e.printStackTrace();
+        }catch(IOException e){
+                e.printStackTrace();
+        }
+        return result;
     }
 
     public class Register extends AsyncTask<String, String, String> {
@@ -107,7 +140,7 @@ public class SignUpActivity extends Activity {
 
         @Override
         protected String doInBackground(String... params) {
-            if(addUser()){
+            if(addUser() == 0){
                 ctx.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -119,15 +152,43 @@ public class SignUpActivity extends Activity {
                         finish();
                     }
                 });
-            }else{
+            }else if(addUser() == 2){
                 ctx.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(ctx, "Complete all the fields", Toast.LENGTH_LONG).show();
                     }
                 });
+            }else{
+                ctx.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(ctx, "user name already taken", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
             return null;
         }
     }
+
+
+    public String convertStreamToString(InputStream is) throws IOException {
+        if (is != null) {
+            StringBuilder sb = new StringBuilder();
+            String line;
+            try {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append("\n");
+                }
+            } finally {
+                is.close();
+            }
+            return sb.toString();
+        }else{
+            return "";
+        }
+    }
+
+
 }
