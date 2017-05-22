@@ -234,6 +234,8 @@ public class RestaurantActivity extends Activity{
                             like.setEnabled(false);
                             like.setImageResource(R.drawable.like_check);
                             dislike.setImageResource(R.drawable.dislike);
+                            dislike.setClickable(true);
+                            dislike.setEnabled(true);
 
 
                         }
@@ -309,6 +311,8 @@ public class RestaurantActivity extends Activity{
                             dislike.setEnabled(false);
                             dislike.setImageResource(R.drawable.dislike_check);
                             like.setImageResource(R.drawable.like);
+                            like.setClickable(true);
+                            like.setEnabled(true);
                         }
                     }
                 });
