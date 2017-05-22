@@ -42,6 +42,7 @@ public class SettingsActivity extends Activity {
         phone = (EditText) findViewById(R.id.txtRegisterPhone);
         submit = (Button) findViewById(R.id.btnRegisterSubmit);
         cancel = (Button) findViewById(R.id.btnRegisterCancel);
+        user.setFocusable(false);
 
 
         if(getIntent().getExtras() != null){
