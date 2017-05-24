@@ -55,6 +55,14 @@
             android:screenOrientation="portrait"
             android:name=".EventByRestaurantActivity">
         </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".RestaurantsRecommendedActivity">
+        </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".RestaurantRecommendActivity">
+        </activity>
 
 
     </application>

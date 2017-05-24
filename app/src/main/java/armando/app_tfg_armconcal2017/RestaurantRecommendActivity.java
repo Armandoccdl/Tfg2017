@@ -2,14 +2,10 @@ package armando.app_tfg_armconcal2017;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,10 +31,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.util.ArrayList;
 
-public class RestaurantActivity extends Activity{
+public class RestaurantRecommendActivity extends Activity{
     String idRestaurant = "";
     String user = "";
     ImageView photo;
@@ -76,15 +71,15 @@ public class RestaurantActivity extends Activity{
         dislike = (ImageButton) findViewById(R.id.btnRestaurantDislike);
         events = (Button) findViewById(R.id.btnRestaurantEvent);
 
-        new Info(RestaurantActivity.this).execute();
-        new CheckLike(RestaurantActivity.this).execute();
-        new CheckDislike(RestaurantActivity.this).execute();
+        new Info(RestaurantRecommendActivity.this).execute();
+        new CheckLike(RestaurantRecommendActivity.this).execute();
+        new CheckDislike(RestaurantRecommendActivity.this).execute();
 
         like.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
-                new CreateLike(RestaurantActivity.this).execute();
+                new CreateLike(RestaurantRecommendActivity.this).execute();
             }
         });
 
@@ -92,7 +87,7 @@ public class RestaurantActivity extends Activity{
 
             @Override
             public void onClick(View v) {
-                new CreateDislike(RestaurantActivity.this).execute();
+                new CreateDislike(RestaurantRecommendActivity.this).execute();
             }
         });
 
@@ -100,7 +95,7 @@ public class RestaurantActivity extends Activity{
 
             @Override
             public void onClick(View v) {
-                new getEvents(RestaurantActivity.this).execute();
+                new getEvents(RestaurantRecommendActivity.this).execute();
             }
         });
 
@@ -372,7 +367,7 @@ public class RestaurantActivity extends Activity{
                     @Override
                     public void run() {
                         Toast.makeText(ctx, "Like!", Toast.LENGTH_LONG).show();
-                        new CheckLike(RestaurantActivity.this).execute();
+                        new CheckLike(RestaurantRecommendActivity.this).execute();
                     }
                 });
             }else{
@@ -423,7 +418,7 @@ public class RestaurantActivity extends Activity{
                     @Override
                     public void run() {
                         Toast.makeText(ctx, "Dislike!", Toast.LENGTH_LONG).show();
-                        new CheckDislike(RestaurantActivity.this).execute();
+                        new CheckDislike(RestaurantRecommendActivity.this).execute();
                     }
                 });
             }else{
@@ -500,7 +495,7 @@ public class RestaurantActivity extends Activity{
             ctx.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Intent intent = new Intent(ctx, RestaurantsActivity.class);
+                    Intent intent = new Intent(ctx, RestaurantsRecommendedActivity.class);
                     Bundle b = getIntent().getExtras();
                     b.putString("Id", idRestaurant);
                     b.putString("User", user);
@@ -516,7 +511,9 @@ public class RestaurantActivity extends Activity{
 
 
     public void onBackPressed() {
-        new Back(RestaurantActivity.this).execute();
+        new RestaurantRecommendActivity.Back(RestaurantRecommendActivity.this).execute();
     }
+
+
 
 }

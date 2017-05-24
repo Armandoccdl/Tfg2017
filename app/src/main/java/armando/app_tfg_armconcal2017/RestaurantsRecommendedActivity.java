@@ -6,16 +6,18 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +29,8 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-public class RestaurantsActivity extends Activity{
+public class RestaurantsRecommendedActivity extends Activity {
+
     String user = "";
     String idRestaurant;
 
@@ -35,32 +38,35 @@ public class RestaurantsActivity extends Activity{
     HttpClient httpclient = new DefaultHttpClient();
     HttpPost httppost;
     ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
+    ArrayList<Integer> ids = new ArrayList<>();
     Restaurant restaurant;
+    ArrayList<NameValuePair> nameValuePairs;
+    ArrayList<Object> info = new ArrayList<>();
     Activity ctx = this;
-    Button recommend;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_restaurants);
+        setContentView(R.layout.activity_restaurants_recommended);
 
-        if(getIntent().getExtras() != null){
-            Bundle b = getIntent().getExtras();
-            String u = b.getString("User");
-            user = u;
-        }
+        Bundle b = getIntent().getExtras();
+        String u = b.getString("User");
+        user = u;
 
-        new List(RestaurantsActivity.this).execute();
+        new RestaurantsRecommendedActivity.List(RestaurantsRecommendedActivity.this).execute();
 
-        list = (ListView) findViewById(R.id.listRestaurants);
-        recommend = (Button) findViewById(R.id.btnRestaurantsRecommend);
+        list = (ListView) findViewById(R.id.listRestaurantsRecommended);
+
+
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final Restaurant restaurant = (Restaurant) list.getAdapter().getItem(position);
                 idRestaurant = String.valueOf(restaurant.getId());
-                Intent intent = new Intent(ctx, RestaurantActivity.class);
+                Intent intent = new Intent(ctx, RestaurantRecommendActivity.class);
                 Bundle b = getIntent().getExtras();
                 b.putString("Id", idRestaurant);
                 intent.putExtras(b);
@@ -69,23 +75,93 @@ public class RestaurantsActivity extends Activity{
             }
         });
 
-        recommend.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-               Intent intent = new Intent(ctx, RestaurantsRecommendedActivity.class);
-                Bundle b = getIntent().getExtras();
-                intent.putExtras(b);
-                startActivity(intent);
-                finish();
-            }
-        });
 
     }
 
+
+
+
+
+
+
+    public String log() {
+        httppost = new HttpPost("http://armconcaltfg.esy.es/php/getRestaurantsColabFilter.php");
+        nameValuePairs = new ArrayList<NameValuePair>(1);
+        nameValuePairs.add(new BasicNameValuePair("user", user));
+        HttpResponse response;
+        String result = "";
+
+        try {
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            response = httpclient.execute(httppost);
+            HttpEntity entity = response.getEntity();
+            InputStream instream = entity.getContent();
+            result = convertStreamToString(instream);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
+    private boolean filter(){
+        String data = log();
+        System.out.println("Returns: " + data);
+        if(!data.equalsIgnoreCase("")){
+            JSONObject json;
+            try{
+                json = new JSONObject(data);
+                JSONArray jsonArray = json.optJSONArray("info");
+                for(int i = 0; i < jsonArray.length(); i++){
+                    JSONObject jsonArrayChild = jsonArray.getJSONObject(i);
+                    ids.add(jsonArrayChild.optInt("restaurantId"));
+                }
+                return true;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+
+    public String log2() {
+        if(filter()){
+            httppost = new HttpPost("http://armconcaltfg.esy.es/php/getFilterRestaurants.php");
+            nameValuePairs = new ArrayList<NameValuePair>(4);
+            nameValuePairs.add(new BasicNameValuePair("id1", ids.get(0).toString()));
+            nameValuePairs.add(new BasicNameValuePair("id2", ids.get(1).toString()));
+            nameValuePairs.add(new BasicNameValuePair("id3", ids.get(2).toString()));
+            nameValuePairs.add(new BasicNameValuePair("id4", ids.get(3).toString()));
+            HttpResponse response;
+            String result = "";
+
+            try {
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                response = httpclient.execute(httppost);
+                HttpEntity entity = response.getEntity();
+                InputStream instream = entity.getContent();
+                result = convertStreamToString(instream);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+       return "";
+    }
+
+
     public boolean getRestaurantsList(){
         restaurants.clear();
-        String data = log();
+        String data = log2();
         if(!data.equalsIgnoreCase("")){
             JSONObject json;
             try{
@@ -104,25 +180,6 @@ public class RestaurantsActivity extends Activity{
         return false;
     }
 
-    public String log() {
-        httppost = new HttpPost("http://armconcaltfg.esy.es/php/getRestaurants.php");
-        HttpResponse response;
-        String result = "";
-
-        try {
-            response = httpclient.execute(httppost);
-            HttpEntity entity = response.getEntity();
-            InputStream instream = entity.getContent();
-            result = convertStreamToString(instream);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
 
     public class List extends AsyncTask<String, Float, String> {
 
@@ -138,7 +195,7 @@ public class RestaurantsActivity extends Activity{
                 ctx.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        list.setAdapter(new RestaurantsAdapter(RestaurantsActivity.this, R.layout.row_restaurant, restaurants) {
+                        list.setAdapter(new RestaurantsAdapter(RestaurantsRecommendedActivity.this, R.layout.row_restaurant, restaurants) {
                             @Override
                             public void onEntrance(Object entrance, View view) {
                                 if (entrance != null) {
@@ -166,6 +223,8 @@ public class RestaurantsActivity extends Activity{
             return null;
         }
     }
+
+
 
     public String convertStreamToString(InputStream is) throws IOException {
         if (is != null) {
@@ -200,8 +259,10 @@ public class RestaurantsActivity extends Activity{
             ctx.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Intent intent = new Intent(ctx, MenuActivity.class);
+                    Intent intent = new Intent(ctx, RestaurantsActivity.class);
                     Bundle b = getIntent().getExtras();
+                    b.putString("Id", idRestaurant);
+                    b.putString("User", user);
                     intent.putExtras(b);
                     startActivity(intent);
                     finish();
@@ -212,8 +273,12 @@ public class RestaurantsActivity extends Activity{
         }
     }
 
+
     public void onBackPressed() {
-        new Back(RestaurantsActivity.this).execute();
+        new RestaurantsRecommendedActivity.Back(RestaurantsRecommendedActivity.this).execute();
     }
+
+
+
 
 }
