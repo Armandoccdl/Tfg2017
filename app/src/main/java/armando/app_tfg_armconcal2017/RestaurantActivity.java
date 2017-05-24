@@ -42,7 +42,7 @@ public class RestaurantActivity extends Activity{
     String idRestaurant = "";
     String user = "";
     ImageView photo;
-    TextView name, address, phone, web;
+    TextView name, address, phone, web, food;
     ImageButton like, dislike;
     Button events;
     HttpClient httpclient = new DefaultHttpClient();
@@ -71,6 +71,7 @@ public class RestaurantActivity extends Activity{
         address = (TextView) findViewById(R.id.txtRestaurantAddress);
         phone = (TextView) findViewById(R.id.txtRestaurantPhone);
         web = (TextView) findViewById(R.id.txtRestaurantWeb);
+        food = (TextView) findViewById(R.id.txtRestaurantFood);
         like = (ImageButton) findViewById(R.id.btnRestaurantLike);
         dislike = (ImageButton) findViewById(R.id.btnRestaurantDislike);
         events = (Button) findViewById(R.id.btnRestaurantEvent);
@@ -144,6 +145,7 @@ public class RestaurantActivity extends Activity{
                     info.add(jsonArrayChild.optString("address"));
                     info.add(jsonArrayChild.optString("phone"));
                     info.add(jsonArrayChild.optString("web"));
+                    info.add(jsonArrayChild.optString("food"));
                 }
                 return true;
             } catch (JSONException e) {
@@ -172,6 +174,7 @@ public class RestaurantActivity extends Activity{
                         address.setText(info.get(2).toString());
                         phone.setText(info.get(3).toString());
                         web.setText(info.get(4).toString());
+                        food.setText(info.get(5).toString());
                     }
                 });
             }
