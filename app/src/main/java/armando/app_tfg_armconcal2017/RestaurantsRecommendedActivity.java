@@ -56,6 +56,7 @@ public class RestaurantsRecommendedActivity extends Activity {
         user = u;
 
         new RestaurantsRecommendedActivity.List(RestaurantsRecommendedActivity.this).execute();
+        new RestaurantsRecommendedActivity.List2(RestaurantsRecommendedActivity.this).execute();
 
         list = (ListView) findViewById(R.id.listRestaurantsRecommended);
 
@@ -180,6 +181,60 @@ public class RestaurantsRecommendedActivity extends Activity {
         return false;
     }
 
+    public String log3() {
+        if(filter()){
+            httppost = new HttpPost("http://armconcaltfg.esy.es/php/getRestaurantsKnowledgeFilter.php");
+            nameValuePairs = new ArrayList<NameValuePair>(4);
+            nameValuePairs.add(new BasicNameValuePair("user", user));
+            HttpResponse response;
+            String result = "";
+
+            try {
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                response = httpclient.execute(httppost);
+                HttpEntity entity = response.getEntity();
+                InputStream instream = entity.getContent();
+                result = convertStreamToString(instream);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+        return "";
+    }
+
+
+    public boolean getRestaurantsList2(){
+        String data = log3();
+        ArrayList <Integer>  in = new ArrayList<>();
+        if(!data.equalsIgnoreCase("")){
+            JSONObject json;
+            try{
+                json = new JSONObject(data);
+                JSONArray jsonArray = json.optJSONArray("info");
+                for(int i = 0; i < jsonArray.length(); i++){
+                    JSONObject jsonArrayChild = jsonArray.getJSONObject(i);
+                    restaurant = new Restaurant(jsonArrayChild.optInt("id"),jsonArrayChild.optInt("likes"),jsonArrayChild.optInt("dislikes"),jsonArrayChild.optString("name"),jsonArrayChild.optString("phone"));
+                    for(Restaurant r : restaurants){
+                        in.add(r.getId());
+                    }
+                    if(!in.contains(restaurant.getId())){
+                        restaurants.add(restaurant);
+                    }
+                }
+                return true;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+
 
     public class List extends AsyncTask<String, Float, String> {
 
@@ -224,6 +279,49 @@ public class RestaurantsRecommendedActivity extends Activity {
         }
     }
 
+
+    public class List2 extends AsyncTask<String, Float, String> {
+
+        private Activity ctx;
+
+        List2(Activity ctx){
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            if(getRestaurantsList2()){
+                ctx.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        list.setAdapter(new RestaurantsAdapter(RestaurantsRecommendedActivity.this, R.layout.row_restaurant, restaurants) {
+                            @Override
+                            public void onEntrance(Object entrance, View view) {
+                                if (entrance != null) {
+                                    TextView nameR = (TextView) view.findViewById(R.id.txtRowRestaurantName);
+                                    if (nameR != null)
+                                        nameR.setText(""+((Restaurant) entrance).getName());
+
+                                    TextView phoneR = (TextView) view.findViewById(R.id.txtRowRestaurantPhone);
+                                    if (phoneR != null)
+                                        phoneR.setText(""+ ((Restaurant) entrance).getPhone());
+
+                                    TextView likesR = (TextView) view.findViewById(R.id.txtRowRestaurantLikes);
+                                    if (likesR != null)
+                                        likesR.setText(""+((Restaurant) entrance).getLikes());
+
+                                    TextView dislikesR = (TextView) view.findViewById(R.id.txtRowRestaurantDislikes);
+                                    if (dislikesR != null)
+                                        dislikesR.setText(""+((Restaurant) entrance).getDislikes());
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+            return null;
+        }
+    }
 
 
     public String convertStreamToString(InputStream is) throws IOException {
