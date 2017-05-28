@@ -13,6 +13,7 @@
     <string name="eventsList">EVENTS</string>
     <string name="recommend">RECOMMEND</string>
     <string name="recommendRestaurants">RECOMMEND RESTAURANTS</string>
+    <string name="recommendEvents">RECOMMEND EVENTS</string>
     <string name="join">JOIN</string>
     <string name="unjoin">UNCOIL</string>
 </resources>
