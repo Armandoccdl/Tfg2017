@@ -70,7 +70,7 @@ public class EventByRestaurantActivity extends Activity {
 
     }
 
-
+    //Solicitamos el evento
     public String log() {
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/getEvent.php");
         nameValuePairs = new ArrayList<NameValuePair>(1);
@@ -94,7 +94,7 @@ public class EventByRestaurantActivity extends Activity {
         return result;
     }
 
-
+    //Ordenamos la información
     private boolean filter(){
         String data = log();
         if(!data.equalsIgnoreCase("")){
@@ -119,6 +119,7 @@ public class EventByRestaurantActivity extends Activity {
         return false;
     }
 
+    //Mostramos la informacion del evento
     public class Info extends AsyncTask<String, Float, String> {
 
         private Activity ctx;
@@ -147,7 +148,7 @@ public class EventByRestaurantActivity extends Activity {
     }
 
 
-
+    //comprobamos si ese usuario tiene asistencia al evento
     public String checkjoin() {
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/checkAssistance.php");
         nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -172,6 +173,7 @@ public class EventByRestaurantActivity extends Activity {
         return result;
     }
 
+    //Ordenamos la informacion sobre la asistencia
     private boolean joinStatus(){
         String data = checkjoin();
         if(!data.equals("[]\n")){
@@ -191,6 +193,7 @@ public class EventByRestaurantActivity extends Activity {
         return false;
     }
 
+    //Si el usuario tiene asistencia a ese evento el boton se vuelve Uncoil
     public class CheckAssistance extends AsyncTask<String, Float, String> {
 
         private Activity ctx;
@@ -238,7 +241,7 @@ public class EventByRestaurantActivity extends Activity {
         }
     }
 
-
+    //Solicitamos crear una asistencia
     public boolean assistance(){
 
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/createAssistant.php");
@@ -260,6 +263,8 @@ public class EventByRestaurantActivity extends Activity {
         return false;
     }
 
+
+    //Si la asistencia se crea con exito sale un mensaje de exito y se vuelve a comprobar la asistencia
     public class CreateAssistant extends AsyncTask<String, String, String> {
 
         private Activity ctx;
@@ -299,6 +304,7 @@ public class EventByRestaurantActivity extends Activity {
     }
 
 
+    //Borrar una asistencia
     public boolean unassistance(){
 
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/deleteAssistant.php");
@@ -320,6 +326,7 @@ public class EventByRestaurantActivity extends Activity {
         return false;
     }
 
+    //Si la asistencia se borra con exito se muestra un mesnaje y se vuelve a comprobar la asistencia
     public class DeleteAssistant extends AsyncTask<String, String, String> {
 
         private Activity ctx;
@@ -358,7 +365,7 @@ public class EventByRestaurantActivity extends Activity {
         }
     }
 
-
+    //Se recupera el evento
     public String number() {
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/getEvent.php");
         nameValuePairs = new ArrayList<NameValuePair>(1);
@@ -382,7 +389,7 @@ public class EventByRestaurantActivity extends Activity {
         return result;
     }
 
-
+    //Se ordena la informacion
     private boolean filterNumber(){
         String data = number();
         if(!data.equalsIgnoreCase("")){
@@ -401,7 +408,7 @@ public class EventByRestaurantActivity extends Activity {
         }
         return false;
     }
-
+    //Se actualiza el numero de asistentes
     public class UpdateNumber extends AsyncTask<String, Float, String> {
 
         private Activity ctx;

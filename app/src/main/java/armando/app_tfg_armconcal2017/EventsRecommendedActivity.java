@@ -72,6 +72,7 @@ public class EventsRecommendedActivity extends Activity{
         });
     }
 
+    //Se solicitan los eventos del filtrado colaborativo
     public String log() {
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/getEventsColabFilter.php");
         nameValuePairs = new ArrayList<NameValuePair>(1);
@@ -95,7 +96,7 @@ public class EventsRecommendedActivity extends Activity{
         return result;
     }
 
-
+    //Se ordena la informacion
     private boolean filter(){
         String data = log();
         if(!data.equalsIgnoreCase("")){
@@ -115,7 +116,7 @@ public class EventsRecommendedActivity extends Activity{
         return false;
     }
 
-
+    //Se solicitan los eventos resultantes del filtrado
     public String log2() {
         if(filter()){
             httppost = new HttpPost("http://armconcaltfg.esy.es/php/getFilterEvents.php");
@@ -142,7 +143,7 @@ public class EventsRecommendedActivity extends Activity{
         return "";
     }
 
-
+    //Se añaden los eventos a una lista de eventos
     public boolean getEventsList(){
         events.clear();
         String data = log2();
@@ -164,7 +165,7 @@ public class EventsRecommendedActivity extends Activity{
         return false;
     }
 
-
+    //Se muestran los eventos en la lista de la vista
     public class List extends AsyncTask<String, Float, String> {
 
         private Activity ctx;

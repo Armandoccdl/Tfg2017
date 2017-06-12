@@ -75,6 +75,8 @@ public class EventActivity extends Activity {
     }
 
 
+    //Recuperamos el evento
+
     public String log() {
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/getEvent.php");
         nameValuePairs = new ArrayList<NameValuePair>(1);
@@ -98,7 +100,7 @@ public class EventActivity extends Activity {
         return result;
     }
 
-
+    //Añadimos a info todos los atributos del evento
     private boolean filter(){
         String data = log();
         if(!data.equalsIgnoreCase("")){
@@ -122,6 +124,8 @@ public class EventActivity extends Activity {
         }
         return false;
     }
+
+    //Mostramos el evento en la vista
 
     public class Info extends AsyncTask<String, Float, String> {
 
@@ -152,6 +156,7 @@ public class EventActivity extends Activity {
 
 
 
+    //Recuperamos la informacion de si este usuario va a ese evento
     public String checkjoin() {
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/checkAssistance.php");
         nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -175,7 +180,7 @@ public class EventActivity extends Activity {
         }
         return result;
     }
-
+    //Formateamos la informacion
     private boolean joinStatus(){
         String data = checkjoin();
         if(!data.equals("[]\n")){
@@ -194,6 +199,8 @@ public class EventActivity extends Activity {
         }
         return false;
     }
+
+    //Si el usuario asiste muestra el boton uncoil, si no muestra join
 
     public class CheckAssistance extends AsyncTask<String, Float, String> {
 
@@ -242,6 +249,7 @@ public class EventActivity extends Activity {
         }
     }
 
+    //Metodo para crear la asistencia del usuario
 
     public boolean assistance(){
 
@@ -263,6 +271,8 @@ public class EventActivity extends Activity {
         }
         return false;
     }
+
+    //Si se crea la asistencia con exito se muestra un mesnaje y se vuelve a llamar al metodo de comprobar la asistencia.
 
     public class CreateAssistant extends AsyncTask<String, String, String> {
 
@@ -302,6 +312,7 @@ public class EventActivity extends Activity {
         }
     }
 
+    //Se elimina una asistencia
 
     public boolean unassistance(){
 
@@ -323,6 +334,8 @@ public class EventActivity extends Activity {
         }
         return false;
     }
+
+    //Si ha tenido exito se muestra un mensaje y se vuelve a comprobar la asistencia
 
     public class DeleteAssistant extends AsyncTask<String, String, String> {
 
@@ -363,6 +376,8 @@ public class EventActivity extends Activity {
     }
 
 
+    //Se recupera un evento
+
     public String number() {
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/getEvent.php");
         nameValuePairs = new ArrayList<NameValuePair>(1);
@@ -386,7 +401,7 @@ public class EventActivity extends Activity {
         return result;
     }
 
-
+    //se saca la informacion de los asistentes
     private boolean filterNumber(){
         String data = number();
         if(!data.equalsIgnoreCase("")){
@@ -406,6 +421,8 @@ public class EventActivity extends Activity {
         return false;
     }
 
+
+    //Se actualiza el numero de asistentes.
     public class UpdateNumber extends AsyncTask<String, Float, String> {
 
         private Activity ctx;

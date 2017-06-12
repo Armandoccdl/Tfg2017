@@ -87,7 +87,7 @@ public class RestaurantsSearchActivity extends Activity {
 
 
 
-
+    //Solicitamos los restaurantes que hemos buscado
     public String log() {
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/getRestaurantsSearch.php");
         nameValuePairs = new ArrayList<NameValuePair>(1);
@@ -111,7 +111,7 @@ public class RestaurantsSearchActivity extends Activity {
         return result;
     }
 
-
+    //Se ordena la informacion
     private boolean filter(){
         String data = log();
         if(!data.equalsIgnoreCase("")){
@@ -132,7 +132,7 @@ public class RestaurantsSearchActivity extends Activity {
     }
 
 
-
+    //Se crea una lista de restaurantes
     public boolean getRestaurantsList(){
         restaurants.clear();
         String data = log();
@@ -154,7 +154,7 @@ public class RestaurantsSearchActivity extends Activity {
         return false;
     }
 
-
+    //Se muestran los restaurantes
     public class List extends AsyncTask<String, Float, String> {
 
         private Activity ctx;

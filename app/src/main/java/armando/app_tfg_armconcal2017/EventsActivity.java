@@ -82,7 +82,7 @@ public class EventsActivity extends Activity{
         });
 
     }
-
+    //Se solicitan todos los eventos
     public String log() {
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/getEvents.php");
         HttpResponse response;
@@ -103,7 +103,7 @@ public class EventsActivity extends Activity{
         return result;
     }
 
-
+    //Se ordena la informacion y se crea una lista de eventos
     public boolean getEventsList(){
         events.clear();
         String data = log();
@@ -125,7 +125,7 @@ public class EventsActivity extends Activity{
         return false;
     }
 
-
+    //Se añaden los restaurantes a la lista de la vista
     public class List extends AsyncTask<String, Float, String> {
 
         private Activity ctx;

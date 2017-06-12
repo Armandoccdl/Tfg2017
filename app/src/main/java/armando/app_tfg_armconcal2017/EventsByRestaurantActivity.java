@@ -71,7 +71,7 @@ public class EventsByRestaurantActivity extends Activity{
             }
         });
     }
-
+    //Se recuperan los eventos de cierto restaurante
     public String log() {
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/getEventsByRestaurant.php");
         nameValuePairs = new ArrayList<NameValuePair>(1);
@@ -95,7 +95,7 @@ public class EventsByRestaurantActivity extends Activity{
         return result;
     }
 
-
+    //Se crea una lista de eventos con esos eventos
     public boolean getEventsList(){
         events.clear();
         String data = log();
@@ -117,7 +117,7 @@ public class EventsByRestaurantActivity extends Activity{
         return false;
     }
 
-
+    //Se muestran los eventos en la lista de la vista
     public class List extends AsyncTask<String, Float, String> {
 
         private Activity ctx;

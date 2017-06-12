@@ -67,7 +67,7 @@ public class SignUpActivity extends Activity {
 
         });
     }
-
+    //Solicitamos crear un usuario
     public int addUser() {
         String u = user.getText().toString();
         String p = pass.getText().toString();
@@ -103,7 +103,7 @@ public class SignUpActivity extends Activity {
         }
         return 3;
     }
-
+    //Comprobamos que el nombre no esta en uso
     public String checkName(){
         String u = user.getText().toString();
         HttpResponse response;
@@ -129,7 +129,7 @@ public class SignUpActivity extends Activity {
         }
         return result;
     }
-
+    //Si el usuario es creado correctamente se muestra un mensaje de exito y se vuelve a la vista de login, sino muestra un mensaje de error
     public class Register extends AsyncTask<String, String, String> {
 
         private Activity ctx;

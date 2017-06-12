@@ -108,7 +108,7 @@ public class RestaurantActivity extends Activity{
 
 
     }
-
+    //Solicitamos un restaurante
     public String log() {
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/getRestaurant.php");
         nameValuePairs = new ArrayList<NameValuePair>(1);
@@ -131,7 +131,7 @@ public class RestaurantActivity extends Activity{
         }
         return result;
     }
-
+    //Ordenamos la informacion
     private boolean filter(){
         String data = log();
         if(!data.equalsIgnoreCase("")){
@@ -155,7 +155,7 @@ public class RestaurantActivity extends Activity{
         }
         return false;
     }
-
+    //La mostramos por pantalla
     public class Info extends AsyncTask<String, Float, String> {
 
         private Activity ctx;
@@ -182,7 +182,7 @@ public class RestaurantActivity extends Activity{
             return null;
         }
     }
-
+    //Comprobamos si el usuario le ha dado me gusta al restaurante
     public String checkLike() {
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/checkLike.php");
         nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -206,7 +206,7 @@ public class RestaurantActivity extends Activity{
         }
         return result;
     }
-
+    //Ordenamos la informacion
     private boolean likeStatus(){
         String data = checkLike();
         if(!data.equals("[]\n")){
@@ -225,7 +225,7 @@ public class RestaurantActivity extends Activity{
         }
         return false;
     }
-
+    //Si el usuario le ha dado me gusta, se cambia el boton y solo se deja pulsable el de no me gusta
     public class CheckLike extends AsyncTask<String, Float, String> {
 
         private Activity ctx;
@@ -257,7 +257,7 @@ public class RestaurantActivity extends Activity{
             return null;
         }
     }
-
+    //Comprobamos si el usuario le ha dado no me gusta al restaurante
     public String checkDislike() {
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/checkDislike.php");
         nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -281,7 +281,7 @@ public class RestaurantActivity extends Activity{
         }
         return result;
     }
-
+    //Ordenamos la informacion
     private boolean dislikeStatus(){
         String data = checkDislike();
         if(!data.equals("[]\n")){
@@ -301,6 +301,7 @@ public class RestaurantActivity extends Activity{
         return false;
     }
 
+    //Si el usuario le ha dado no me gusta cambia el boton y solo es pulsable el boton de me gusta
     public class CheckDislike extends AsyncTask<String, Float, String> {
 
         private Activity ctx;
@@ -331,6 +332,7 @@ public class RestaurantActivity extends Activity{
         }
     }
 
+    //Solicitamos crear un me gusta
     public boolean like(){
 
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/createLike.php");
@@ -351,7 +353,7 @@ public class RestaurantActivity extends Activity{
         }
         return false;
     }
-
+    //Si se crea con exito sale un mensaje de exito y comprobamos el estado de las valoraciones de nuevo
     public class CreateLike extends AsyncTask<String, String, String> {
 
         private Activity ctx;
@@ -381,7 +383,7 @@ public class RestaurantActivity extends Activity{
             return null;
         }
     }
-
+    //Se solicita crear un no me gusta
     public boolean dislike(){
 
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/createDislike.php");
@@ -402,7 +404,7 @@ public class RestaurantActivity extends Activity{
         }
         return false;
     }
-
+    //Si se crea el no me gusta, sale un mensaje de exito y se vuelve a comprobar el estado de las valoraciones del restaurante
     public class CreateDislike extends AsyncTask<String, String, String> {
 
         private Activity ctx;

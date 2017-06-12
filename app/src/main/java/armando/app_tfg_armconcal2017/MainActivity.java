@@ -82,6 +82,7 @@ public class MainActivity extends Activity {
         startActivityForResult(intent, 1);
     }
 
+    //Solicitamos el usuario
     public String log() {
         String u = user.getText().toString();
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/getUser.php");
@@ -105,7 +106,7 @@ public class MainActivity extends Activity {
         }
         return result;
     }
-
+    //ordenamos la informacion
     private boolean filter(){
         String data = log();
         if(!data.equalsIgnoreCase("")){
@@ -129,7 +130,7 @@ public class MainActivity extends Activity {
         }
         return false;
     }
-
+    //Si el usuario existe en el sistema, sale un mensaje de exito y le pasamos al menu
     public class Initiate extends AsyncTask<String, Float, String> {
 
         private Activity ctx;

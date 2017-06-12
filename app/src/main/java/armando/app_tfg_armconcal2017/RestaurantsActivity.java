@@ -104,7 +104,7 @@ public class RestaurantsActivity extends Activity{
 
 
     }
-
+    //ordenamos todos los restaurantes
     public boolean getRestaurantsList(){
         restaurants.clear();
         String data = log();
@@ -125,7 +125,7 @@ public class RestaurantsActivity extends Activity{
         }
         return false;
     }
-
+    //Solicitamos todos los restaurantes
     public String log() {
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/getRestaurants.php");
         HttpResponse response;
@@ -145,7 +145,7 @@ public class RestaurantsActivity extends Activity{
         }
         return result;
     }
-
+    //Mostramos los restaurantes en la lista de la vista
     public class List extends AsyncTask<String, Float, String> {
 
         private Activity ctx;

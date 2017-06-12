@@ -80,7 +80,7 @@ public class SettingsActivity extends Activity {
         });
     }
 
-
+    //Se solicitan los datos del usuario
     public boolean getData(){
 
         String v1 = user.getText().toString();
@@ -115,7 +115,7 @@ public class SettingsActivity extends Activity {
         }
         return false;
     }
-
+    //Se muestran los datos del usuario
     public class EditUser extends AsyncTask<String, Float, String> {
 
         private Activity ctx;

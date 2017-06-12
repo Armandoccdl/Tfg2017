@@ -84,7 +84,7 @@ public class RestaurantsRecommendedActivity extends Activity {
 
 
 
-
+    //Solicitamos los restaurantes del filtrado colaborativo
     public String log() {
         httppost = new HttpPost("http://armconcaltfg.esy.es/php/getRestaurantsColabFilter.php");
         nameValuePairs = new ArrayList<NameValuePair>(1);
@@ -108,7 +108,7 @@ public class RestaurantsRecommendedActivity extends Activity {
         return result;
     }
 
-
+    //Ordenamos la informacion
     private boolean filter(){
         String data = log();
         if(!data.equalsIgnoreCase("")){
@@ -128,7 +128,7 @@ public class RestaurantsRecommendedActivity extends Activity {
         return false;
     }
 
-
+    //Conseguimos los restaurantes con las ids de los filtrado colaborativo
     public String log2() {
         if(filter()){
             httppost = new HttpPost("http://armconcaltfg.esy.es/php/getFilterRestaurants.php");
@@ -158,7 +158,7 @@ public class RestaurantsRecommendedActivity extends Activity {
        return "";
     }
 
-
+    //Creamos una lista de restaurantes con esos restaurantes
     public boolean getRestaurantsList(){
         restaurants.clear();
         String data = log2();
@@ -179,7 +179,7 @@ public class RestaurantsRecommendedActivity extends Activity {
         }
         return false;
     }
-
+    //Conseguimos los restaurantes del filtrado por conocimiento
     public String log3() {
         if(filter()){
             httppost = new HttpPost("http://armconcaltfg.esy.es/php/getRestaurantsKnowledgeFilter.php");
@@ -206,7 +206,7 @@ public class RestaurantsRecommendedActivity extends Activity {
         return "";
     }
 
-
+    //hacemos una lista de restaurantes con los restaurantes del filtrado por conocimiento
     public boolean getRestaurantsList2(){
         String data = log3();
         ArrayList <Integer>  in = new ArrayList<>();
@@ -234,7 +234,7 @@ public class RestaurantsRecommendedActivity extends Activity {
     }
 
 
-
+    //Se muestran los restaurantes del filtrado colaborativo
     public class List extends AsyncTask<String, Float, String> {
 
         private Activity ctx;
@@ -278,7 +278,7 @@ public class RestaurantsRecommendedActivity extends Activity {
         }
     }
 
-
+    //Se muestran los restaurantes del filtrado por conocimiento
     public class List2 extends AsyncTask<String, Float, String> {
 
         private Activity ctx;
