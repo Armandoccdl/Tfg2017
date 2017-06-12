@@ -134,7 +134,6 @@ public class RestaurantActivity extends Activity{
 
     private boolean filter(){
         String data = log();
-        System.out.println("Returns: " + data);
         if(!data.equalsIgnoreCase("")){
             JSONObject json;
             try{
@@ -210,8 +209,6 @@ public class RestaurantActivity extends Activity{
 
     private boolean likeStatus(){
         String data = checkLike();
-        System.out.println("Returns: " + data);
-        System.out.println(user);
         if(!data.equals("[]\n")){
             JSONObject json;
             try{
@@ -287,8 +284,6 @@ public class RestaurantActivity extends Activity{
 
     private boolean dislikeStatus(){
         String data = checkDislike();
-        System.out.println("Returns: " + data);
-        System.out.println(user);
         if(!data.equals("[]\n")){
             JSONObject json;
             try{

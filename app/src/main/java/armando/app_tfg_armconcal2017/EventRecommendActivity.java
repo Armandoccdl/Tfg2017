@@ -97,7 +97,6 @@ public class EventRecommendActivity extends Activity {
 
     private boolean filter(){
         String data = log();
-        System.out.println("Returns: " + data);
         if(!data.equalsIgnoreCase("")){
             JSONObject json;
             try{
@@ -175,8 +174,6 @@ public class EventRecommendActivity extends Activity {
 
     private boolean joinStatus(){
         String data = checkjoin();
-        System.out.println("Returns: " + data);
-        System.out.println(user);
         if(!data.equals("[]\n")){
             JSONObject json;
             try{
@@ -388,7 +385,6 @@ public class EventRecommendActivity extends Activity {
 
     private boolean filterNumber(){
         String data = number();
-        System.out.println("Returns: " + data);
         if(!data.equalsIgnoreCase("")){
             JSONObject json;
             try{

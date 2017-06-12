@@ -114,7 +114,6 @@ public class RestaurantsSearchActivity extends Activity {
 
     private boolean filter(){
         String data = log();
-        System.out.println("Returns: " + data);
         if(!data.equalsIgnoreCase("")){
             JSONObject json;
             try{

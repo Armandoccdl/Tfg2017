@@ -108,7 +108,6 @@ public class MainActivity extends Activity {
 
     private boolean filter(){
         String data = log();
-        System.out.println("Returns: " + data);
         if(!data.equalsIgnoreCase("")){
             JSONObject json;
             try{
@@ -120,7 +119,6 @@ public class MainActivity extends Activity {
                     b.putString("Email",jsonArrayChild.optString("email") );
                     b.putString("Phone",jsonArrayChild.optString("phone") );
                     b.putString("Pass", passLog);
-                    System.out.println("Obtained pass: " + passLog);
                     if(passLog.equals(pass.getText().toString())){
                         return true;
                     }
