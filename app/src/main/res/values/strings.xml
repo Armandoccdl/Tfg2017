@@ -14,6 +14,7 @@
     <string name="recommend">RECOMMEND</string>
     <string name="recommendRestaurants">RECOMMEND RESTAURANTS</string>
     <string name="searchRestaurants">SEARCH RESTAURANTS</string>
+    <string name="searchEvents">SEARCH EVENTS</string>
     <string name="recommendEvents">RECOMMEND EVENTS</string>
     <string name="join">JOIN</string>
     <string name="unjoin">UNCOIL</string>

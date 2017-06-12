@@ -14,10 +14,13 @@ import android.widget.TextView;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,44 +32,44 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-public class EventsActivity extends Activity{
+public class EventsSearchActivity extends Activity{
     String user = "";
     String idEvent;
+    String searchString;
 
     ListView list;
     HttpClient httpclient = new DefaultHttpClient();
     HttpPost httppost;
     ArrayList<Event> events = new ArrayList<Event>();
     Event event;
-    Button recommend;
+    ArrayList<NameValuePair> nameValuePairs;
     Activity ctx = this;
-    ImageButton btnSearch;
-    EditText search;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_events);
+        setContentView(R.layout.activity_events_search);
 
         if(getIntent().getExtras() != null){
             Bundle b = getIntent().getExtras();
             String u = b.getString("User");
+            String cadena = b.getString("searchString");
             user = u;
+            searchString = cadena;
         }
 
-        new List(EventsActivity.this).execute();
+        new List(EventsSearchActivity.this).execute();
 
         list = (ListView) findViewById(R.id.listEvents);
-        recommend = (Button) findViewById(R.id.btnEventsRecommend);
-        btnSearch= (ImageButton) findViewById(R.id.btnEventsSearch);
-        search= (EditText) findViewById(R.id.txtEventsSearch);
+
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final Event event = (Event) list.getAdapter().getItem(position);
                 idEvent = String.valueOf(event.getId());
-                Intent intent = new Intent(ctx, EventActivity.class);
+                Intent intent = new Intent(ctx, EventSearchActivity.class);
                 Bundle b = getIntent().getExtras();
                 b.putString("Id", idEvent);
                 intent.putExtras(b);
@@ -75,42 +78,19 @@ public class EventsActivity extends Activity{
             }
         });
 
-        recommend.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ctx, EventsRecommendedActivity.class);
-                Bundle b = getIntent().getExtras();
-                intent.putExtras(b);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        btnSearch.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ctx, EventsSearchActivity.class);
-                Bundle b = getIntent().getExtras();
-                b.putString("searchString", search.getText().toString());
-                intent.putExtras(b);
-                startActivity(intent);
-                finish();
-            }
-
-
-        });
 
 
     }
     //Se solicitan todos los eventos
     public String log() {
-        httppost = new HttpPost("http://armconcaltfg.esy.es/php/getEvents.php");
+        httppost = new HttpPost("http://armconcaltfg.esy.es/php/getEventsSearch.php");
+        nameValuePairs = new ArrayList<NameValuePair>(1);
+        nameValuePairs.add(new BasicNameValuePair("searchString", searchString ));
         HttpResponse response;
         String result = "";
 
         try {
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             response = httpclient.execute(httppost);
             HttpEntity entity = response.getEntity();
             InputStream instream = entity.getContent();
@@ -147,7 +127,7 @@ public class EventsActivity extends Activity{
         return false;
     }
 
-    //Se añaden los eventos a la lista de la vista
+    //Se añaden los restaurantes a la lista de la vista
     public class List extends AsyncTask<String, Float, String> {
 
         private Activity ctx;
@@ -162,7 +142,7 @@ public class EventsActivity extends Activity{
                 ctx.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        list.setAdapter(new EventsAdapter(EventsActivity.this, R.layout.row_event, events) {
+                        list.setAdapter(new EventsAdapter(EventsSearchActivity.this, R.layout.row_event, events) {
                             @Override
                             public void onEntrance(Object entrance, View view) {
                                 if (entrance != null) {
@@ -224,7 +204,7 @@ public class EventsActivity extends Activity{
             ctx.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Intent intent = new Intent(ctx, MenuActivity.class);
+                    Intent intent = new Intent(ctx, EventsActivity.class);
                     Bundle b = getIntent().getExtras();
                     intent.putExtras(b);
                     startActivity(intent);
@@ -237,7 +217,7 @@ public class EventsActivity extends Activity{
     }
 
     public void onBackPressed() {
-        new Back(EventsActivity.this).execute();
+        new Back(EventsSearchActivity.this).execute();
     }
 
 }

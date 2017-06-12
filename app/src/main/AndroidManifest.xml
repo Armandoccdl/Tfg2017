@@ -79,6 +79,14 @@
             android:screenOrientation="portrait"
             android:name=".RestaurantSearchActivity">
         </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".EventsSearchActivity">
+        </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".EventSearchActivity">
+        </activity>
     </application>
 
 </manifest>
